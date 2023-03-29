@@ -1,0 +1,23 @@
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  add_commit:
+    name: Add Commit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      commit_hash: ${{ steps.add_commit.outputs.commit_hash }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Add Empty Commit
+        id: add_commit
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Add empty commit
+          commit_options: --allow-empty
