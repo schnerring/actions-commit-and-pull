@@ -89,15 +89,21 @@ jobs:
       # - test_windows_2022
       # - test_windows_2019
     steps:
-      - name: Merge Test Results
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.add_commit.outputs.commit_hash }}
+
+      - name: Add Test Results to data/test-results.json
         run: |
           jq \
-            --compact-output \
             --arg expectedCommitHash "${{ needs.add_commit.outputs.commit_hash }}" \
-            --argjson results1 '${{ needs.test_ubuntu_2204.outputs.json_test_results }}' \
-            --argjson results2 '${{ needs.test_ubuntu_2004.outputs.json_test_results }}' \
-            '{
+            --argjson result1 '${{ needs.test_ubuntu_2204.outputs.json_test_results }}' \
+            --argjson result2 '${{ needs.test_ubuntu_2004.outputs.json_test_results }}' \
+            '.[] += [{
               "date": (now | todateiso8601),
               "expectedCommitHash": $expectedCommitHash,
-              "results": [$results1, $results2]
-            }'
+              "results": [$result1, $result2]
+            }]' \
+            data/test-results.json
+          cat data/test-results.json
