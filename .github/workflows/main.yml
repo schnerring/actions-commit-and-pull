@@ -92,7 +92,7 @@ jobs:
       - name: Merge Test Results
         run: |
           jq \
-            --raw-output \
+            --compact-output \
             --arg expectedCommitHash "${{ needs.add_commit.outputs.commit_hash }}" \
             --argjson results1 '${{ needs.test_ubuntu_2204.outputs.json_test_results }}' \
             --argjson results2 '${{ needs.test_ubuntu_2004.outputs.json_test_results }}' \
@@ -100,4 +100,4 @@ jobs:
               "date": (now | todateiso8601),
               "expectedCommitHash": $expectedCommitHash,
               "results": [$results1, $results2]
-            }'"
+            }'
