@@ -21,6 +21,7 @@ jobs:
         with:
           commit_message: Add empty commit
           commit_options: --allow-empty
+          skip_dirty_check: true
 
   test_ubuntu_latest:
     name: Test `ubuntu-latest`
