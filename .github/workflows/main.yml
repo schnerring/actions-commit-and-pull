@@ -32,14 +32,14 @@ jobs:
       github_ref: ${{ github.ref }}
       commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
 
-  # test_ubuntu_2004:
-  #   name: "Test: ubuntu-20.04"
-  #   needs: add_commit
-  #   uses: ./.github/workflows/test.yml
-  #   with:
-  #     runner_image: ubuntu-20.04
-  #     github_ref: ${{ github.ref }}
-  #     commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
+  test_ubuntu_2004:
+    name: "Test: ubuntu-20.04"
+    needs: add_commit
+    uses: ./.github/workflows/test.yml
+    with:
+      runner_image: ubuntu-20.04
+      github_ref: ${{ github.ref }}
+      commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
 
   # test_macos_12:
   #   name: "Test: macos-12" # macos-latest (2023-03-30)
@@ -94,10 +94,10 @@ jobs:
           jq \
             --raw-output \
             --arg expectedCommitHash "${{ needs.add_commit.outputs.commit_hash }}" \
-            --argjson results1 "${{ needs.test_ubuntu_2204.outputs.json_test_results }}" \
-            --argjson results2 "${{ needs.test_ubuntu_2004.outputs.json_test_results }}" \
+            --argjson results1 '${{ needs.test_ubuntu_2204.outputs.json_test_results }}' \
+            --argjson results2 '${{ needs.test_ubuntu_2004.outputs.json_test_results }}' \
             '{
               "date": (now | todateiso8601),
               "expectedCommitHash": $expectedCommitHash,
               "results": [$results1, $results2]
-            }')"
+            }'"

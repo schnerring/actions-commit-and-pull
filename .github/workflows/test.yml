@@ -19,7 +19,7 @@ on:
     outputs:
       json_test_results:
         description: Test results as JSON
-        value: ${{ jobs.json_test_results.outputs.json }}
+        value: ${{ jobs.jsonify_test_results.outputs.json }}
 
 jobs:
   git_version:
@@ -103,7 +103,7 @@ jobs:
         run: |
           echo "json=$(jq \
             --null-input \
-            --raw-output
+            --compact-output \
             --arg image "${{ inputs.runner_image }}" \
             --arg gitVersion "${{ needs.git_version.outputs.version }}" \
             --arg hashDefaultCheckout "${{ needs.default_checkout.outputs.commit_hash }}" \
