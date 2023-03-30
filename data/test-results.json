@@ -1,1 +1,28 @@
-[]
+[
+  {
+    "date": "2023-03-30T06:11:58Z",
+    "expectedCommitHash": "c555e850bd88a72181f44a00bc624f2eea226d8c",
+    "results": [
+      {
+        "image": "ubuntu-22.04",
+        "gitVersion": "git version 2.40.0",
+        "actualCommitHashes": {
+          "defaultCheckout": "e1db7fc67ad7ff839837a24d216568ad4c3cfc19",
+          "defaultCheckoutAndPull": "c555e850bd88a72181f44a00bc624f2eea226d8c",
+          "checkoutGithubRef": "c555e850bd88a72181f44a00bc624f2eea226d8c",
+          "checkoutCommitHash": "c555e850bd88a72181f44a00bc624f2eea226d8c"
+        }
+      },
+      {
+        "image": "ubuntu-20.04",
+        "gitVersion": "git version 2.40.0",
+        "actualCommitHashes": {
+          "defaultCheckout": "e1db7fc67ad7ff839837a24d216568ad4c3cfc19",
+          "defaultCheckoutAndPull": "c555e850bd88a72181f44a00bc624f2eea226d8c",
+          "checkoutGithubRef": "c555e850bd88a72181f44a00bc624f2eea226d8c",
+          "checkoutCommitHash": "c555e850bd88a72181f44a00bc624f2eea226d8c"
+        }
+      }
+    ]
+  }
+]
