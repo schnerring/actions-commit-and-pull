@@ -30,49 +30,49 @@ jobs:
     with:
       runner_image: ubuntu-22.04
       github_ref: ${{ github.ref }}
-      commit_hash: ${{ needs.outputs.commit_hash }}
+      commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
 
-  test_ubuntu_2004:
-    name: "Test: ubuntu-20.04"
-    needs: add_commit
-    uses: ./.github/workflows/test.yml
-    with:
-      runner_image: ubuntu-20.04
-      github_ref: ${{ github.ref }}
-      commit_hash: ${{ needs.outputs.commit_hash }}
+  # test_ubuntu_2004:
+  #   name: "Test: ubuntu-20.04"
+  #   needs: add_commit
+  #   uses: ./.github/workflows/test.yml
+  #   with:
+  #     runner_image: ubuntu-20.04
+  #     github_ref: ${{ github.ref }}
+  #     commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
 
-  test_macos_12:
-    name: "Test: macos-12" # macos-latest (2023-03-30)
-    needs: add_commit
-    uses: ./.github/workflows/test.yml
-    with:
-      runner_image: macos-12
-      github_ref: ${{ github.ref }}
-      commit_hash: ${{ needs.outputs.commit_hash }}
+  # test_macos_12:
+  #   name: "Test: macos-12" # macos-latest (2023-03-30)
+  #   needs: add_commit
+  #   uses: ./.github/workflows/test.yml
+  #   with:
+  #     runner_image: macos-12
+  #     github_ref: ${{ github.ref }}
+  #     commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
 
-  test_macos_11:
-    name: "Test: macos-11"
-    needs: add_commit
-    uses: ./.github/workflows/test.yml
-    with:
-      runner_image: macos-11
-      github_ref: ${{ github.ref }}
-      commit_hash: ${{ needs.outputs.commit_hash }}
+  # test_macos_11:
+  #   name: "Test: macos-11"
+  #   needs: add_commit
+  #   uses: ./.github/workflows/test.yml
+  #   with:
+  #     runner_image: macos-11
+  #     github_ref: ${{ github.ref }}
+  #     commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
 
-  test_windows_2022:
-    name: "Test: windows-2022" # windows-latest (2023-03-30)
-    needs: add_commit
-    uses: ./.github/workflows/test.yml
-    with:
-      runner_image: windows-2022
-      github_ref: ${{ github.ref }}
-      commit_hash: ${{ needs.outputs.commit_hash }}
+  # test_windows_2022:
+  #   name: "Test: windows-2022" # windows-latest (2023-03-30)
+  #   needs: add_commit
+  #   uses: ./.github/workflows/test.yml
+  #   with:
+  #     runner_image: windows-2022
+  #     github_ref: ${{ github.ref }}
+  #     commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
 
-  test_windows_2019:
-    name: "Test: windows-2019"
-    needs: add_commit
-    uses: ./.github/workflows/test.yml
-    with:
-      runner_image: windows-2019
-      github_ref: ${{ github.ref }}
-      commit_hash: ${{ needs.outputs.commit_hash }}
+  # test_windows_2019:
+  #   name: "Test: windows-2019"
+  #   needs: add_commit
+  #   uses: ./.github/workflows/test.yml
+  #   with:
+  #     runner_image: windows-2019
+  #     github_ref: ${{ github.ref }}
+  #     commit_hash: ${{ needs.add_commit.outputs.commit_hash }}

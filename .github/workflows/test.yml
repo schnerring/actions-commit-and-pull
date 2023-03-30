@@ -25,10 +25,10 @@ jobs:
   git_version:
     runs-on: ${{ inputs.runner_image }}
     outputs:
-      git_version: ${{ steps.git_version.outputs.git_version }}
+      version: ${{ steps.git_version.outputs.version }}
     steps:
       - id: git_version
-        run: echo "git_verson=$(git --version)" >> $GITHUB_OUTPUT
+        run: echo "version=$(git --version)" >> $GITHUB_OUTPUT
         shell: bash
 
   default_checkout:
@@ -88,7 +88,7 @@ jobs:
 
   jsonify_test_results:
     name: JSONify Test Results
-    uses: ubuntu-latest
+    runs-on: ubuntu-latest
     outputs:
       json: ${{ steps.jsonify.outputs.json }}
     needs:
@@ -99,15 +99,17 @@ jobs:
       - checkout_commit_hash
     steps:
       - id: jsonify
+        shell: bash
         run: |
-          json="$(jq \
+          echo "json=$(jq \
             --null-input \
+            --raw-output
             --arg image "${{ inputs.runner_image }}" \
-            --arg gitVersion "${{ jobs.git_version.outputs.git_version }}" \
-            --arg hashDefaultCheckout "${{ jobs.default_checkout.outputs.commit_hash }}" \
-            --arg hashDefaultCheckoutAndPull "${{ jobs.default_checkout_and_pull.outputs.commit_hash }}" \
-            --arg hashCheckoutGithubRef "${{ jobs.checkout_github_ref.outputs.commit_hash }}" \
-            --arg hashCheckoutCommitHash "${{ jobs.checkout_commit_hash.outputs.commit_hash }}" \
+            --arg gitVersion "${{ needs.git_version.outputs.version }}" \
+            --arg hashDefaultCheckout "${{ needs.default_checkout.outputs.commit_hash }}" \
+            --arg hashDefaultCheckoutAndPull "${{ needs.default_checkout_and_pull.outputs.commit_hash }}" \
+            --arg hashCheckoutGithubRef "${{ needs.checkout_github_ref.outputs.commit_hash }}" \
+            --arg hashCheckoutCommitHash "${{ needs.checkout_commit_hash.outputs.commit_hash }}" \
             '{
               "image": $image,
               "gitVersion": $gitVersion,
@@ -117,6 +119,5 @@ jobs:
                 "checkoutGithubRef": $hashCheckoutGithubRef,
                 "checkoutCommitHash": $hashCheckoutCommitHash
               }
-            }')"
-          echo "json=$json" >> $GITHUB_OUTPUT
+            }')" >> $GITHUB_OUTPUT
 
