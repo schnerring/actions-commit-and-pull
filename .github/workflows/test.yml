@@ -17,25 +17,9 @@ on:
         type: string
 
     outputs:
-      git_version:
-        description: The Git version installed on the runner image
-        value: ${{ jobs.git_version.outputs.git_version }}
-
-      commit_hash_default_checkout:
-        description: The HEAD commit of `default_checkout`
-        value: ${{ jobs.default_checkout.outputs.commit_hash }}
-
-      commit_hash_default_checkout_and_pull:
-        description: The HEAD commit of `default_checkout_and_pull`
-        value: ${{ jobs.default_checkout_and_pull.outputs.commit_hash }}
-
-      commit_hash_checkout_github_ref:
-        description: The HEAD commit of `checkout_github_ref`
-        value: ${{ jobs.checkout_github_ref.outputs.commit_hash }}
-
-      commit_hash_checkout_commit_hash:
-        description: The HEAD commit of `checkout_commit_hash`
-        value: ${{ jobs.checkout_commit_hash.outputs.commit_hash }}
+      json_test_results:
+        description: Test results as JSON
+        value: ${{ jobs.json_test_results.outputs.json }}
 
 jobs:
   git_version:
@@ -50,7 +34,7 @@ jobs:
   default_checkout:
     runs-on: ${{ inputs.runner_image }}
     outputs:
-      commit_hash: ${{ steps.git_version.outputs.git_version }}
+      commit_hash: ${{ steps.head_commit_hash.outputs.commit_hash }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -61,6 +45,8 @@ jobs:
 
   default_checkout_and_pull:
     runs-on: ${{ inputs.runner_image }}
+    outputs:
+      commit_hash: ${{ steps.head_commit_hash.outputs.commit_hash }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -74,6 +60,8 @@ jobs:
 
   checkout_github_ref:
     runs-on: ${{ inputs.runner_image }}
+    outputs:
+      commit_hash: ${{ steps.head_commit_hash.outputs.commit_hash }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -86,6 +74,8 @@ jobs:
 
   checkout_commit_hash:
     runs-on: ${{ inputs.runner_image }}
+    outputs:
+      commit_hash: ${{ steps.head_commit_hash.outputs.commit_hash }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -95,3 +85,38 @@ jobs:
       - id: head_commit_hash
         run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         shell: bash
+
+  jsonify_test_results:
+    name: JSONify Test Results
+    uses: ubuntu-latest
+    outputs:
+      json: ${{ steps.jsonify.outputs.json }}
+    needs:
+      - git_version
+      - default_checkout
+      - default_checkout_and_pull
+      - checkout_github_ref
+      - checkout_commit_hash
+    steps:
+      - id: jsonify
+        run: |
+          json="$(jq \
+            --null-input \
+            --arg image "${{ inputs.runner_image }}" \
+            --arg gitVersion "${{ jobs.git_version.outputs.git_version }}" \
+            --arg hashDefaultCheckout "${{ jobs.default_checkout.outputs.commit_hash }}" \
+            --arg hashDefaultCheckoutAndPull "${{ jobs.default_checkout_and_pull.outputs.commit_hash }}" \
+            --arg hashCheckoutGithubRef "${{ jobs.checkout_github_ref.outputs.commit_hash }}" \
+            --arg hashCheckoutCommitHash "${{ jobs.checkout_commit_hash.outputs.commit_hash }}" \
+            '{
+              "image": $image,
+              "gitVersion": $gitVersion,
+              "actualCommitHashes": {
+                "defaultCheckout": $hashDefaultCheckout,
+                "defaultCheckoutAndPull": $hashDefaultCheckoutAndPull,
+                "checkoutGithubRef": $hashCheckoutGithubRef,
+                "checkoutCommitHash": $hashCheckoutCommitHash
+              }
+            }')"
+          echo "json=$json" >> $GITHUB_OUTPUT
+
