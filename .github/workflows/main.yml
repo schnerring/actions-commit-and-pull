@@ -76,3 +76,28 @@ jobs:
   #     runner_image: windows-2019
   #     github_ref: ${{ github.ref }}
   #     commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
+
+  commit_test_results:
+    name: Commit JSON Test Results
+    runs-on: ubuntu-latest
+    needs:
+      - add_commit
+      - test_ubuntu_2204
+      - test_ubuntu_2004
+      # - test_macos_12
+      # - test_macos_11
+      # - test_windows_2022
+      # - test_windows_2019
+    steps:
+      - name: Merge Test Results
+        run: |
+          jq \
+            --raw-output \
+            --arg expectedCommitHash "${{ needs.add_commit.outputs.commit_hash }}" \
+            --argjson results1 "${{ needs.test_ubuntu_2204.outputs.json_test_results }}" \
+            --argjson results2 "${{ needs.test_ubuntu_2004.outputs.json_test_results }}" \
+            '{
+              "date": (now | todateiso8601),
+              "expectedCommitHash": $expectedCommitHash,
+              "results": [$results1, $results2]
+            }')"

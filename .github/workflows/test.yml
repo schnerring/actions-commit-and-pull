@@ -87,7 +87,7 @@ jobs:
         shell: bash
 
   jsonify_test_results:
-    name: JSONify Test Results
+    name: Jsonify Test Results
     runs-on: ubuntu-latest
     outputs:
       json: ${{ steps.jsonify.outputs.json }}
