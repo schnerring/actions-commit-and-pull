@@ -77,9 +77,11 @@ jobs:
   #     github_ref: ${{ github.ref }}
   #     commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
 
-  commit_test_results:
+  publish_test_results:
     name: Commit JSON Test Results
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
       - add_commit
       - test_ubuntu_2204
@@ -96,6 +98,7 @@ jobs:
 
       - name: Append Test Results to data/test-results.json
         run: |
+          tmp=$(mktemp)
           outfile=data/test-results.json
           jq \
             --arg expectedCommitHash "${{ needs.add_commit.outputs.commit_hash }}" \
@@ -106,5 +109,9 @@ jobs:
               "expectedCommitHash": $expectedCommitHash,
               "results": [$result1, $result2]
             }]' \
-            $outfile > $outfile
-          git status
+            "$outfile" > "$tmp" && mv "$tmp" "$outfile"
+
+      - name: Commit data/test-results.json Changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update data/test-results.json
