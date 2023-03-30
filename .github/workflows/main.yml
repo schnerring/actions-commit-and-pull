@@ -21,3 +21,12 @@ jobs:
         with:
           commit_message: Add empty commit
           commit_options: --allow-empty
+
+  test_ubuntu_latest:
+    name: Test `ubuntu-latest`
+    needs: add_commit
+    uses: ./.github/workflows/test.yml
+    with:
+      runner_image: ubuntu-latest
+      github_ref: ${{ github.ref }}
+      commit_hash: ${{ needs.outputs.commit_hash }}

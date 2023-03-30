@@ -1,0 +1,97 @@
+on:
+  workflow_call:
+    inputs:
+      runner_image:
+        description: The GitHub Actions runner image to be tested
+        required: true
+        type: string
+
+      github_ref:
+        description: The `github.ref` value from the workflow run context
+        required: true
+        type: string
+
+      commit_hash:
+        description: The hash of the commit that was added before running this workflow
+        required: true
+        type: string
+
+    outputs:
+      git_version:
+        description: The Git version installed on the runner image
+        value: ${{ jobs.git_version.outputs.git_version }}
+
+      commit_hash_default_checkout:
+        description: The HEAD commit of `default_checkout`
+        value: ${{ jobs.default_checkout.outputs.commit_hash }}
+
+      commit_hash_default_checkout_and_pull:
+        description: The HEAD commit of `default_checkout_and_pull`
+        value: ${{ jobs.default_checkout_and_pull.outputs.commit_hash }}
+
+      commit_hash_checkout_github_ref:
+        description: The HEAD commit of `checkout_github_ref`
+        value: ${{ jobs.checkout_github_ref.outputs.commit_hash }}
+
+      commit_hash_checkout_commit_hash:
+        description: The HEAD commit of `checkout_commit_hash`
+        value: ${{ jobs.checkout_commit_hash.outputs.commit_hash }}
+
+jobs:
+  git_version:
+    runs-on: ${{ inputs.runner_image }}
+    outputs:
+      git_version: ${{ steps.git_version.outputs.git_version }}
+    steps:
+      - id: git_version
+        run: echo "git_verson=$(git --version)" >> $GITHUB_OUTPUT
+        shell: bash
+
+  default_checkout:
+    runs-on: ${{ inputs.runner_image }}
+    outputs:
+      commit_hash: ${{ steps.git_version.outputs.git_version }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - id: head_commit_hash
+        run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        shell: bash
+
+  default_checkout_and_pull:
+    runs-on: ${{ inputs.runner_image }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - run: git pull
+        shell: bash
+
+      - id: head_commit_hash
+        run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        shell: bash
+
+  checkout_github_ref:
+    runs-on: ${{ inputs.runner_image }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.github_ref }}
+
+      - id: head_commit_hash
+        run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        shell: bash
+
+  checkout_commit_hash:
+    runs-on: ${{ inputs.runner_image }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.commit_hash }}
+
+      - id: head_commit_hash
+        run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        shell: bash
