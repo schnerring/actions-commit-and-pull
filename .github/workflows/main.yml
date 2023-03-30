@@ -94,16 +94,17 @@ jobs:
         with:
           ref: ${{ needs.add_commit.outputs.commit_hash }}
 
-      - name: Add Test Results to data/test-results.json
+      - name: Append Test Results to data/test-results.json
         run: |
+          outfile=data/test-results.json
           jq \
             --arg expectedCommitHash "${{ needs.add_commit.outputs.commit_hash }}" \
             --argjson result1 '${{ needs.test_ubuntu_2204.outputs.json_test_results }}' \
             --argjson result2 '${{ needs.test_ubuntu_2004.outputs.json_test_results }}' \
-            '.[] += [{
+            '. += [{
               "date": (now | todateiso8601),
               "expectedCommitHash": $expectedCommitHash,
               "results": [$result1, $result2]
             }]' \
-            data/test-results.json
-          cat data/test-results.json
+            $outfile > $outfile
+          git status
