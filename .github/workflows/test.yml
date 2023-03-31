@@ -104,20 +104,39 @@ jobs:
           echo "json=$(jq \
             --null-input \
             --compact-output \
+            \
             --arg image "${{ inputs.runner_image }}" \
             --arg gitVersion "${{ needs.git_version.outputs.version }}" \
-            --arg hashDefaultCheckout "${{ needs.default_checkout.outputs.commit_hash }}" \
-            --arg hashDefaultCheckoutAndPull "${{ needs.default_checkout_and_pull.outputs.commit_hash }}" \
-            --arg hashCheckoutGithubRef "${{ needs.checkout_github_ref.outputs.commit_hash }}" \
-            --arg hashCheckoutCommitHash "${{ needs.checkout_commit_hash.outputs.commit_hash }}" \
+            \
+            --arg defaultCheckoutExpected "${{ github.sha }}" \
+            --arg defaultCheckoutActual "${{ needs.default_checkout.outputs.commit_hash }}" \
+            \
+            --arg defaultCheckoutAndPullExpected "${{ inputs.commit_hash }}" \
+            --arg defaultCheckoutAndPullActual "${{ needs.default_checkout_and_pull.outputs.commit_hash }}" \
+            \
+            --arg checkoutGithubRefExpected "${{ inputs.commit_hash }}" \
+            --arg checkoutGithubRefActual "${{ needs.checkout_github_ref.outputs.commit_hash }}" \
+            \
+            --arg checkoutCommitHashExpected "${{ inputs.commit_hash }}" \
+            --arg checkoutCommitHashActual "${{ needs.checkout_commit_hash.outputs.commit_hash }}" \
             '{
               "image": $image,
               "gitVersion": $gitVersion,
-              "actualCommitHashes": {
-                "defaultCheckout": $hashDefaultCheckout,
-                "defaultCheckoutAndPull": $hashDefaultCheckoutAndPull,
-                "checkoutGithubRef": $hashCheckoutGithubRef,
-                "checkoutCommitHash": $hashCheckoutCommitHash
+              "defaultCheckout": {
+                "expectedHash": $defaultCheckoutExpected,
+                "actualHash": $defaultCheckoutActual
+              },
+              "defaultCheckoutAndPull": {
+                "expectedHash": $defaultCheckoutAndPullExpected,
+                "actualHash": $defaultCheckoutAndPullActual
+              },
+              "checkoutGithubRef": {
+                "expectedHash": $checkoutGithubRefExpected,
+                "actualHash": $checkoutGithubRefActual
+              },
+              "checkoutCommitHash": {
+                "expectedHash": $checkoutCommitHashExpected,
+                "actualHash": $checkoutCommitHashActual
               }
             }')" >> $GITHUB_OUTPUT
 

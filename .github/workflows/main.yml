@@ -102,7 +102,6 @@ jobs:
           tmp=$(mktemp)
           outfile=data/test-results.json
           jq \
-            --arg expectedCommitHash "${{ needs.add_commit.outputs.commit_hash }}" \
             --argjson result_ubuntu_2204  '${{ needs.test_ubuntu_2204.outputs.json_test_results }}' \
             --argjson result_ubuntu_2004  '${{ needs.test_ubuntu_2004.outputs.json_test_results }}' \
             --argjson result_macos_12     '${{ needs.test_macos_12.outputs.json_test_results }}' \
@@ -111,7 +110,6 @@ jobs:
             --argjson result_windows_2019 '${{ needs.test_windows_2019.outputs.json_test_results }}' \
             '. += [{
               "date": (now | todateiso8601),
-              "expectedCommitHash": $expectedCommitHash,
               "results": [
                 $result_ubuntu_2204,
                 $result_ubuntu_2004,
