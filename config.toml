@@ -1,0 +1,4 @@
+baseURL = 'https://commit-and-checkout-actions-workflow.github.io/'
+languageCode = 'en-us'
+title = 'Checking Out Code Committed Within the Same GitHub Actions Workflow Run'
+theme = 'xmin'
