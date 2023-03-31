@@ -1,0 +1,32 @@
+on:
+  push:
+    branches:
+      - main
+
+publish:
+    name: Publish Hugo Site
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
+
+      # - name: Install Node
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: "18"
+
+      # - name: Install Hugo
+      #   uses: peaceiris/actions-hugo@v2
+      #   with:
+      #     hugo-version: "0.111.3"
+      #     extended: true
+
+      # - name: Install npm Packages
+      #   run: npm ci
+
+      # - name: Build Hugo
+      #   run: hugo --minify

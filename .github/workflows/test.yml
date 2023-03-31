@@ -1,142 +1,130 @@
 on:
-  workflow_call:
-    inputs:
-      runner_image:
-        description: The GitHub Actions runner image to be tested
-        required: true
-        type: string
-
-      github_ref:
-        description: The `github.ref` value from the workflow run context
-        required: true
-        type: string
-
-      commit_hash:
-        description: The hash of the commit that was added before running this workflow
-        required: true
-        type: string
-
-    outputs:
-      json_test_results:
-        description: Test results as JSON
-        value: ${{ jobs.jsonify_test_results.outputs.json }}
+  push:
+    branches:
+      - main
+      - test
+    paths:
+      - .github/workflows/**
 
 jobs:
-  git_version:
-    runs-on: ${{ inputs.runner_image }}
-    outputs:
-      version: ${{ steps.git_version.outputs.version }}
-    steps:
-      - id: git_version
-        run: echo "version=$(git --version)" >> $GITHUB_OUTPUT
-        shell: bash
-
-  default_checkout:
-    runs-on: ${{ inputs.runner_image }}
-    outputs:
-      commit_hash: ${{ steps.head_commit_hash.outputs.commit_hash }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - id: head_commit_hash
-        run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-        shell: bash
-
-  default_checkout_and_pull:
-    runs-on: ${{ inputs.runner_image }}
-    outputs:
-      commit_hash: ${{ steps.head_commit_hash.outputs.commit_hash }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - run: git pull
-        shell: bash
-
-      - id: head_commit_hash
-        run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-        shell: bash
-
-  checkout_github_ref:
-    runs-on: ${{ inputs.runner_image }}
-    outputs:
-      commit_hash: ${{ steps.head_commit_hash.outputs.commit_hash }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.github_ref }}
-
-      - id: head_commit_hash
-        run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-        shell: bash
-
-  checkout_commit_hash:
-    runs-on: ${{ inputs.runner_image }}
-    outputs:
-      commit_hash: ${{ steps.head_commit_hash.outputs.commit_hash }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.commit_hash }}
-
-      - id: head_commit_hash
-        run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-        shell: bash
-
-  jsonify_test_results:
-    name: Jsonify Test Results
+  add_commit:
+    name: Add Commit
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     outputs:
-      json: ${{ steps.jsonify.outputs.json }}
-    needs:
-      - git_version
-      - default_checkout
-      - default_checkout_and_pull
-      - checkout_github_ref
-      - checkout_commit_hash
+      commit_hash: ${{ steps.add_commit.outputs.commit_hash }}
     steps:
-      - id: jsonify
-        shell: bash
-        run: |
-          echo "json=$(jq \
-            --null-input \
-            --compact-output \
-            \
-            --arg image "${{ inputs.runner_image }}" \
-            --arg gitVersion "${{ needs.git_version.outputs.version }}" \
-            \
-            --arg defaultCheckoutExpected "${{ github.sha }}" \
-            --arg defaultCheckoutActual "${{ needs.default_checkout.outputs.commit_hash }}" \
-            \
-            --arg defaultCheckoutAndPullExpected "${{ inputs.commit_hash }}" \
-            --arg defaultCheckoutAndPullActual "${{ needs.default_checkout_and_pull.outputs.commit_hash }}" \
-            \
-            --arg checkoutGithubRefExpected "${{ inputs.commit_hash }}" \
-            --arg checkoutGithubRefActual "${{ needs.checkout_github_ref.outputs.commit_hash }}" \
-            \
-            --arg checkoutCommitHashExpected "${{ inputs.commit_hash }}" \
-            --arg checkoutCommitHashActual "${{ needs.checkout_commit_hash.outputs.commit_hash }}" \
-            '{
-              "image": $image,
-              "gitVersion": $gitVersion,
-              "defaultCheckout": {
-                "expectedHash": $defaultCheckoutExpected,
-                "actualHash": $defaultCheckoutActual
-              },
-              "defaultCheckoutAndPull": {
-                "expectedHash": $defaultCheckoutAndPullExpected,
-                "actualHash": $defaultCheckoutAndPullActual
-              },
-              "checkoutGithubRef": {
-                "expectedHash": $checkoutGithubRefExpected,
-                "actualHash": $checkoutGithubRefActual
-              },
-              "checkoutCommitHash": {
-                "expectedHash": $checkoutCommitHashExpected,
-                "actualHash": $checkoutCommitHashActual
-              }
-            }')" >> $GITHUB_OUTPUT
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
+      - name: Add Empty Commit
+        id: add_commit
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Add empty commit
+          commit_options: --allow-empty
+          skip_dirty_check: true
+
+  test_ubuntu_2204:
+    name: "Test: ubuntu-22.04" # ubuntu-latest (2023-03-30)
+    needs: add_commit
+    uses: ./.github/workflows/test-runner-image.yml
+    with:
+      runner_image: ubuntu-22.04
+      github_ref: ${{ github.ref }}
+      commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
+
+  test_ubuntu_2004:
+    name: "Test: ubuntu-20.04"
+    needs: add_commit
+    uses: ./.github/workflows/test-runner-image.yml
+    with:
+      runner_image: ubuntu-20.04
+      github_ref: ${{ github.ref }}
+      commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
+
+  test_macos_12:
+    name: "Test: macos-12" # macos-latest (2023-03-30)
+    needs: add_commit
+    uses: ./.github/workflows/test-runner-image.yml
+    with:
+      runner_image: macos-12
+      github_ref: ${{ github.ref }}
+      commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
+
+  test_macos_11:
+    name: "Test: macos-11"
+    needs: add_commit
+    uses: ./.github/workflows/test-runner-image.yml
+    with:
+      runner_image: macos-11
+      github_ref: ${{ github.ref }}
+      commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
+
+  test_windows_2022:
+    name: "Test: windows-2022" # windows-latest (2023-03-30)
+    needs: add_commit
+    uses: ./.github/workflows/test-runner-image.yml
+    with:
+      runner_image: windows-2022
+      github_ref: ${{ github.ref }}
+      commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
+
+  test_windows_2019:
+    name: "Test: windows-2019"
+    needs: add_commit
+    uses: ./.github/workflows/test-runner-image.yml
+    with:
+      runner_image: windows-2019
+      github_ref: ${{ github.ref }}
+      commit_hash: ${{ needs.add_commit.outputs.commit_hash }}
+
+  update_test_results_data_file:
+    name: Commit JSON Test Results to Data File
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs:
+      - add_commit
+      - test_ubuntu_2204
+      - test_ubuntu_2004
+      - test_macos_12
+      - test_macos_11
+      - test_windows_2022
+      - test_windows_2019
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.add_commit.outputs.commit_hash }}
+
+      - name: Append Test Results to data/test-results.json
+        run: |
+          tmp=$(mktemp)
+          outfile=data/test-results.json
+          jq \
+            --argjson result_ubuntu_2204  '${{ needs.test_ubuntu_2204.outputs.json_test_results }}' \
+            --argjson result_ubuntu_2004  '${{ needs.test_ubuntu_2004.outputs.json_test_results }}' \
+            --argjson result_macos_12     '${{ needs.test_macos_12.outputs.json_test_results }}' \
+            --argjson result_macos_11     '${{ needs.test_macos_11.outputs.json_test_results }}' \
+            --argjson result_windows_2022 '${{ needs.test_windows_2022.outputs.json_test_results }}' \
+            --argjson result_windows_2019 '${{ needs.test_windows_2019.outputs.json_test_results }}' \
+            '. += [{
+              "date": (now | todateiso8601),
+              "results": [
+                $result_ubuntu_2204,
+                $result_ubuntu_2004,
+                $result_macos_12,
+                $result_macos_11,
+                $result_windows_2022,
+                $result_windows_2019
+              ]
+            }]' \
+            "$outfile" > "$tmp" && mv "$tmp" "$outfile"
+
+      - name: Commit data/test-results.json Changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update data/test-results.json
+          branch: ${{ github.ref_name }}
