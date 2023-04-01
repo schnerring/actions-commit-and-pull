@@ -1,0 +1,50 @@
+{{ range (index $.Site.Data "test-results") }}
+  <h3>{{ .date | dateFormat ":date_short" }}</h3>
+  <table>
+
+    <thead>
+      <tr>
+        <th colspan="2"></th>
+        <th>ubuntu-22.04</th>
+        <th>ubuntu-20.04</th>
+        <th>macos-12</th>
+        <th>macos-11</th>
+        <th>windows-2022</th>
+        <th>windows-2019</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      {{ $results := .results }}
+      {{ $scenarios := slice "defaultCheckout" "defaultCheckoutAndPull" "checkoutGithubRef" "checkoutCommitHash" }}
+
+      <tr>
+        <th colspan="2">Git</th>
+        {{ range $results }}
+          <td>{{ replace .gitVersion "git version " "" }}</td>
+        {{ end }}
+      </tr>
+
+      {{ range $scenarios }}
+        {{ $scenario := . }}
+        <tr>
+          <th rowspan="2">{{ $scenario }}</th>
+          <th>expected</th>
+          {{ range $results }}
+            {{ $scenarioResult := index . $scenario }}
+            <td><code>{{ substr (index . $scenario).expectedHash 0 7 }}</code></td>
+          {{ end }}
+        </tr>
+        <tr>
+          <th>actual</th>
+          {{ range $results }}
+            <td><code>{{ substr (index . $scenario).actualHash 0 7 }}</code></td>
+          {{ end }}
+        </tr>
+      {{ end }}
+
+    </tbody>
+
+  </table>
+{{ end }}
