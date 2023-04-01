@@ -117,7 +117,7 @@ jobs:
             --arg checkoutWorkflowRefExpected "${{ inputs.exact_hash }}" \
             --arg checkoutWorkflowRefActual "${{ needs.checkout_workflow_ref.outputs.commit_hash }}" \
             \
-            --arg checkoutExact "${{ inputs.exact_hash }}" \
+            --arg checkoutExactExpected "${{ inputs.exact_hash }}" \
             --arg checkoutExactActual "${{ needs.checkout_exact.outputs.commit_hash }}" \
             '{
               "image": $image,
