@@ -6,13 +6,13 @@ on:
         required: true
         type: string
 
-      github_ref:
+      workflow_ref:
         description: The `github.ref` value from the workflow run context
         required: true
         type: string
 
-      commit_hash:
-        description: The hash of the commit that was added before running this workflow
+      exact_hash:
+        description: The exact hash to checkout
         required: true
         type: string
 
@@ -58,7 +58,7 @@ jobs:
         run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         shell: bash
 
-  checkout_github_ref:
+  checkout_workflow_ref:
     runs-on: ${{ inputs.runner_image }}
     outputs:
       commit_hash: ${{ steps.head_commit_hash.outputs.commit_hash }}
@@ -66,13 +66,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ inputs.github_ref }}
+          ref: ${{ inputs.workflow_ref }}
 
       - id: head_commit_hash
         run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         shell: bash
 
-  checkout_commit_hash:
+  checkout_exact:
     runs-on: ${{ inputs.runner_image }}
     outputs:
       commit_hash: ${{ steps.head_commit_hash.outputs.commit_hash }}
@@ -80,7 +80,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ inputs.commit_hash }}
+          ref: ${{ inputs.exact_hash }}
 
       - id: head_commit_hash
         run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
@@ -95,8 +95,8 @@ jobs:
       - git_version
       - default_checkout
       - default_checkout_and_pull
-      - checkout_github_ref
-      - checkout_commit_hash
+      - checkout_workflow_ref
+      - checkout_exact
     steps:
       - id: jsonify
         shell: bash
@@ -111,14 +111,14 @@ jobs:
             --arg defaultCheckoutExpected "${{ github.sha }}" \
             --arg defaultCheckoutActual "${{ needs.default_checkout.outputs.commit_hash }}" \
             \
-            --arg defaultCheckoutAndPullExpected "${{ inputs.commit_hash }}" \
+            --arg defaultCheckoutAndPullExpected "${{ inputs.exact_hash }}" \
             --arg defaultCheckoutAndPullActual "${{ needs.default_checkout_and_pull.outputs.commit_hash }}" \
             \
-            --arg checkoutGithubRefExpected "${{ inputs.commit_hash }}" \
-            --arg checkoutGithubRefActual "${{ needs.checkout_github_ref.outputs.commit_hash }}" \
+            --arg checkoutWorkflowRefExpected "${{ inputs.exact_hash }}" \
+            --arg checkoutWorkflowRefActual "${{ needs.checkout_workflow_ref.outputs.commit_hash }}" \
             \
-            --arg checkoutCommitHashExpected "${{ inputs.commit_hash }}" \
-            --arg checkoutCommitHashActual "${{ needs.checkout_commit_hash.outputs.commit_hash }}" \
+            --arg checkoutExact "${{ inputs.exact_hash }}" \
+            --arg checkoutExactActual "${{ needs.checkout_exact.outputs.commit_hash }}" \
             '{
               "image": $image,
               "gitVersion": $gitVersion,
@@ -130,13 +130,13 @@ jobs:
                 "expectedHash": $defaultCheckoutAndPullExpected,
                 "actualHash": $defaultCheckoutAndPullActual
               },
-              "checkoutGithubRef": {
-                "expectedHash": $checkoutGithubRefExpected,
-                "actualHash": $checkoutGithubRefActual
+              "checkoutWorkflowRef": {
+                "expectedHash": $checkoutWorkflowRefExpected,
+                "actualHash": $checkoutWorkflowRefActual
               },
-              "checkoutCommitHash": {
-                "expectedHash": $checkoutCommitHashExpected,
-                "actualHash": $checkoutCommitHashActual
+              "checkoutExact": {
+                "expectedHash": $checkoutExactExpected,
+                "actualHash": $checkoutExactActual
               }
             }')" >> $GITHUB_OUTPUT
 
