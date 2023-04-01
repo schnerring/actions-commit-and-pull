@@ -1,10 +1,16 @@
+name: "Test"
+
 on:
+  schedule:
+    - cron: 0 6 * * *
+
   push:
     branches:
       - main
       - test
     paths:
-      - .github/workflows/**
+      - .github/workflows/test.yml
+      - .github/workflows/test-runner-image.yml
 
 jobs:
   add_commit:
