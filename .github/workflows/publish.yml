@@ -12,7 +12,8 @@ on:
     types:
       - completed
 
-publish:
+jobs:
+  publish:
     name: Publish Hugo Site
     runs-on: ubuntu-latest
     permissions:
