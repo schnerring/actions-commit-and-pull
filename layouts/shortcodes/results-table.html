@@ -17,7 +17,7 @@
     <tbody>
 
       {{ $results := .results }}
-      {{ $scenarios := slice "defaultCheckout" "defaultCheckoutAndPull" "checkoutGithubRef" "checkoutCommitHash" }}
+      {{ $scenarios := slice "defaultCheckout" "defaultCheckoutAndPull" "checkoutWorkflowRef" "checkoutExact" }}
 
       <tr>
         <th colspan="2">Git</th>

@@ -51,7 +51,7 @@ deploy:
     - run: git pull
 ```
 
-### checkoutGithubRef
+### checkoutWorkflowRef
 
 ```yml
 deploy:
@@ -60,10 +60,10 @@ deploy:
   steps:
     - uses: actions/checkout@v3
       with:
-        ref: ${{ inputs.github_ref }}
+        ref: ${{ github.ref }}
 ```
 
-### checkoutCommitHash
+### checkoutExact
 
 ```yml
 deploy:
