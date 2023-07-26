@@ -14498,5 +14498,130 @@
         }
       }
     ]
+  },
+  {
+    "date": "2023-07-26T06:07:24Z",
+    "results": [
+      {
+        "image": "ubuntu-22.04",
+        "gitVersion": "git version 2.41.0",
+        "defaultCheckout": {
+          "expectedHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f",
+          "actualHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f"
+        },
+        "defaultCheckoutAndPull": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutWorkflowRef": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutExact": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        }
+      },
+      {
+        "image": "ubuntu-20.04",
+        "gitVersion": "git version 2.41.0",
+        "defaultCheckout": {
+          "expectedHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f",
+          "actualHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f"
+        },
+        "defaultCheckoutAndPull": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutWorkflowRef": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutExact": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        }
+      },
+      {
+        "image": "macos-12",
+        "gitVersion": "git version 2.41.0",
+        "defaultCheckout": {
+          "expectedHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f",
+          "actualHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f"
+        },
+        "defaultCheckoutAndPull": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutWorkflowRef": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutExact": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        }
+      },
+      {
+        "image": "macos-11",
+        "gitVersion": "git version 2.41.0",
+        "defaultCheckout": {
+          "expectedHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f",
+          "actualHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f"
+        },
+        "defaultCheckoutAndPull": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutWorkflowRef": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutExact": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        }
+      },
+      {
+        "image": "windows-2022",
+        "gitVersion": "git version 2.41.0.windows.1",
+        "defaultCheckout": {
+          "expectedHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f",
+          "actualHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f"
+        },
+        "defaultCheckoutAndPull": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutWorkflowRef": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutExact": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        }
+      },
+      {
+        "image": "windows-2019",
+        "gitVersion": "git version 2.41.0.windows.1",
+        "defaultCheckout": {
+          "expectedHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f",
+          "actualHash": "8be429bbef8f2d15909790e9e3ba9b2127803b0f"
+        },
+        "defaultCheckoutAndPull": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutWorkflowRef": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        },
+        "checkoutExact": {
+          "expectedHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8",
+          "actualHash": "89038890032f3aea2e32142ed4a2088f6f2a29d8"
+        }
+      }
+    ]
   }
 ]
