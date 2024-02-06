@@ -26,7 +26,7 @@ jobs:
 
       - name: Add Empty Commit
         id: add_commit
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Add empty commit
           commit_options: --allow-empty
@@ -131,7 +131,7 @@ jobs:
             "$outfile" > "$tmp" && mv "$tmp" "$outfile"
 
       - name: Commit data/test-results.json Changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update data/test-results.json
           commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>

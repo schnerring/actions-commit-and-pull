@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - id: add_commit
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Add empty commit
           commit_options: --allow-empty
