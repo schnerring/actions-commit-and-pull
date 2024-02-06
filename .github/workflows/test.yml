@@ -30,6 +30,7 @@ jobs:
         with:
           commit_message: Add empty commit
           commit_options: --allow-empty
+          commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           skip_dirty_check: true
 
   test_ubuntu_2204:
@@ -133,4 +134,5 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Update data/test-results.json
+          commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           branch: ${{ github.ref_name }}
